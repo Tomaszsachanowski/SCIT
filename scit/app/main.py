@@ -1,11 +1,10 @@
 import pymysql
+from app import app
+from db_config import mysql
 from flask import flash, session, render_template, request, redirect, url_for
+#from werkzeug import generate_password_hash, check_password_hash
 from werkzeug.security import generate_password_hash, check_password_hash
 		
-from app import app
-from database import mysql
-
-
 @app.route('/add', methods=['POST'])
 def add_product_to_cart():
 	cursor = None
@@ -62,19 +61,18 @@ def add_product_to_cart():
 		conn.close()
 		
 @app.route('/')
-def all_products():
-	try:
+def products():
+	# try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT * FROM product")
 		rows = cursor.fetchall()
 		return render_template('products.html', products=rows)
-	except Exception as e:
-		print(e)
-	finally:
-		cursor.close() 
-		conn.close()
-
+	# except Exception as e:
+	# 	print(e)
+	# finally:
+	# 	cursor.close() 
+	# 	conn.close()
 
 @app.route('/empty')
 def empty_cart():

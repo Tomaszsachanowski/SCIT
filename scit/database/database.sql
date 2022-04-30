@@ -11,8 +11,11 @@ CREATE TABLE `product` (
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `product` (`id`, `name`, `code`, `image`, `price`) VALUES
-(1, 'Apple 13 Pro', 'App13P', 'images/Apple_13_pro.jpg', 4000.00),
-(2, 'Realme 7 Pro', 'REA07P', 'images/Realme_7_pro.jpg', 2100.00),
-(3, 'Samsung A32', 'SAMA32', 'images/Samsung_A32.jpg', 2500.00),
-(4, 'Xiaomi MI 11T', 'XIA11T', 'images/Xiaomi_Mi_11T.jpg', 2300.00),
-(5, 'Xiaomi READMI 10S', 'XIA10S', 'images/Xiaomi_readmi_10S.jpg', 1800.00);
+(1, 'American Tourist', 'AMTR01', 'product-images/bag.jpg', 12000.00),
+(2, 'EXP Portable Hard Drive', 'USB02', 'product-images/external-hard-drive.jpg', 5000.00),
+(3, 'Shoes', 'SH03', 'product-images/shoes.jpg', 1000.00),
+(4, 'XP 1155 Intel Core Laptop', 'LPN4', 'product-images/laptop.jpg', 80000.00),
+(5, 'FinePix Pro2 3D Camera', '3DCAM01', 'product-images/camera.jpg', 150000.00),
+(6, 'Simple Mobile', 'MB06', 'product-images/mobile.jpg', 3000.00),
+(7, 'Luxury Ultra thin Wrist Watch', 'WristWear03', 'product-images/watch.jpg', 3000.00),
+(8, 'Headphone', 'HD08', 'product-images/headphone.jpg', 400.00);
