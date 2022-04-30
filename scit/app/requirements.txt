@@ -1,0 +1,5 @@
+cryptography
+Flask
+Flask-MySQL
+mysql-connector
+mysql-connector-python
