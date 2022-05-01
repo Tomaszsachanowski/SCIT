@@ -11,7 +11,7 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 app.config['MYSQL_DATABASE_DB'] = 'shopingdatabase'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_HOST'] = 'db'
 mysql.init_app(app)
 
 
@@ -128,6 +128,6 @@ def array_merge( first_array , second_array ):
 	return False		
 		
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
 
 

@@ -1,8 +1,8 @@
 # Use an official Python runtime as an image
-FROM python:3.6
+FROM python:3.8.13
 
 # The EXPOSE instruction indicates the ports on which a container
-EXPOSE 5000
+# EXPOSE 5000
 
 # Sets the working directory for following COPY and CMD instructions
 # Notice we haven’t created a directory by this name - this instruction
@@ -11,7 +11,8 @@ WORKDIR /app
 
 COPY . /app
 RUN python -m pip install --upgrade pip
-RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
+# RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --no-cache-dir -r requirements.txt
 RUN ls
 # Run app.py when the container launches
 # COPY app.py /app

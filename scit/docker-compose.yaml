@@ -1,17 +1,33 @@
 version: "2"
 services:
-  app:
+  app_1:
     build: ./app
     links:
       - db
     ports:
-      - "5000:5000"
+      - "5001:5000"
+    container_name: shop-app-1
+  app_2:
+    build: ./app
+    links:
+      - db
+    ports:
+      - "5002:5000"
+    container_name: shop-app-2
+  app_3:
+    build: ./app
+    links:
+      - db
+    ports:
+      - "5003:5000"
+    container_name: shop-app-3
 
   db:
-    image: mysql:5.7
+    image: mysql:8.0.28
     ports:
-      - "3306:3306"
+      - "30000:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./database:/docker-entrypoint-initdb.d/:ro
+    container_name: mysql-8_0
