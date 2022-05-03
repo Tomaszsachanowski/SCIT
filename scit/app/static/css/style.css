@@ -26,8 +26,8 @@ body {
 }
 
 #obrazek-koszykowy {
-	width: 55px;
-    height: 55px;
+	width: 40px;
+    height: 60px;
     padding: 10px;
     vertical-align: middle;
 }
@@ -57,8 +57,8 @@ body {
 	width: 380px;
 	height: 260px;
     vertical-align: middle;
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
 	margin-top: 20px;
 	margin-bottom: 20px;
 }
@@ -67,7 +67,7 @@ body {
 	height: 155px;
 	width: 250px;
 	background-color: #FFF;
-    vertical-align: middle;
+	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 10px;

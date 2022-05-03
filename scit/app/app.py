@@ -11,7 +11,7 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 app.config['MYSQL_DATABASE_DB'] = 'shopingdatabase'
-app.config['MYSQL_DATABASE_HOST'] = 'db'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 
 
@@ -75,7 +75,7 @@ def products():
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT * FROM product")
 		rows = cursor.fetchall()
-		return render_template('products.html', products=rows)
+		return render_template('products.html', products=rows, )
 	except Exception as e:
 		print(e)
 	finally:
