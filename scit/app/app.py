@@ -28,7 +28,16 @@ def add_product_to_cart():
 			cursor.execute("SELECT * FROM product WHERE code=%s", _code)
 			row = cursor.fetchone()
 			
-			itemArray = { row['code'] : {'name' : row['name'], 'code' : row['code'], 'quantity' : _quantity, 'price' : row['price'], 'image' : row['image'], 'total_price': _quantity * row['price']}}
+			itemArray = {
+				row['code'] : {
+					'name' : row['name'],
+					'code' : row['code'],
+					'quantity' : _quantity,
+					'price' : row['price'],
+					'image' : row['image'],
+					'total_price': _quantity * row['price']
+				}
+			}
 			
 			all_total_price = 0
 			all_total_quantity = 0
@@ -129,5 +138,3 @@ def array_merge( first_array , second_array ):
 		
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
-
-
