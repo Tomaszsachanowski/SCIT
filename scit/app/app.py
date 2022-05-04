@@ -1,8 +1,10 @@
 import os
 
 from flask import Flask, session, render_template, request, redirect, url_for
+from flask_session import Session
 from flaskext.mysql import MySQL
 import pymysql
+import redis
 
 
 app = Flask(__name__)
@@ -16,7 +18,18 @@ app.config['MYSQL_DATABASE_DB'] = 'shopingdatabase'
 app.config['MYSQL_DATABASE_HOST'] = 'db'
 mysql.init_app(app)
 
+# Configure Redis for storing the session data on the server-side
+sess = Session()
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_REDIS'] = redis.from_url('redis://redis:6379')
+app.config['SESSION_KEY_PREFIX'] = 'my_sid:'  #  the prefix of the value stored in session 
+sess.init_app(app)
+
 TITLE = os.getenv('TITLE_APP')
+
+
 
 
 @app.route('/add', methods=['POST'])
@@ -131,6 +144,22 @@ def delete_product(code):
 	except Exception as e:
 		print(e)
 		
+
+@app.before_request
+def before_request_func():
+	session.sid = 'd5ac9317-b772-428c-b192-b61c94b02226'
+	session.modified = True
+	print(session.sid)
+
+@app.after_request
+def after_request_func(response):
+	print(session.sid)
+	session.sid = 'd5ac9317-b772-428c-b192-b61c94b02226'
+	session.modified = True
+	print(session.sid)
+	return response
+
+
 def array_merge( first_array , second_array ):
 	if isinstance( first_array , list ) and isinstance( second_array , list ):
 		return first_array + second_array

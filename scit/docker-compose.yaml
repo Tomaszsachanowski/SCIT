@@ -4,6 +4,7 @@ services:
     build: ./app
     links:
       - db
+      - redis
     ports:
       - "5001:5000"
     container_name: shop-app-1
@@ -13,6 +14,7 @@ services:
     build: ./app
     links:
       - db
+      - redis
     ports:
       - "5002:5000"
     container_name: shop-app-2
@@ -22,6 +24,7 @@ services:
     build: ./app
     links:
       - db
+      - redis
     ports:
       - "5003:5000"
     container_name: shop-app-3
@@ -37,3 +40,13 @@ services:
     volumes:
       - ./database:/docker-entrypoint-initdb.d/:ro
     container_name: mysql-8_0
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    # environment:
+    #   MYSQL_ROOT_PASSWORD: root
+    # volumes:
+    #   - ./database:/docker-entrypoint-initdb.d/:ro
+    container_name: redis-session

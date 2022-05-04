@@ -4,3 +4,5 @@ Flask-MySQL
 PyMySQL
 mysql-connector
 mysql-connector-python
+Flask-Session
+redis
