@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, session, render_template, request, redirect, url_for
 from flaskext.mysql import MySQL
 import pymysql
@@ -11,8 +13,10 @@ mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 app.config['MYSQL_DATABASE_DB'] = 'shopingdatabase'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+app.config['MYSQL_DATABASE_HOST'] = 'db'
 mysql.init_app(app)
+
+TITLE = os.getenv('TITLE_APP')
 
 
 @app.route('/add', methods=['POST'])
@@ -84,7 +88,7 @@ def products():
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT * FROM product")
 		rows = cursor.fetchall()
-		return render_template('products.html', products=rows, )
+		return render_template('products.html', products=rows, title=TITLE)
 	except Exception as e:
 		print(e)
 	finally:
