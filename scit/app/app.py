@@ -10,7 +10,7 @@ import redis
 app = Flask(__name__)
 app.secret_key = "secret key"
 mysql = MySQL()
- 
+
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
@@ -24,12 +24,11 @@ app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis.from_url('redis://redis:6379')
-app.config['SESSION_KEY_PREFIX'] = 'my_sid:'  #  the prefix of the value stored in session 
+app.config['SESSION_KEY_PREFIX'] = 'shop_session:' 
 sess.init_app(app)
 
 TITLE = os.getenv('TITLE_APP')
-
-
+SID = os.getenv('SID')
 
 
 @app.route('/add', methods=['POST'])
@@ -55,10 +54,8 @@ def add_product_to_cart():
 					'total_price': _quantity * row['price']
 				}
 			}
-			
 			all_total_price = 0
 			all_total_quantity = 0
-			
 			session.modified = True
 			if 'cart_item' in session:
 				if row['code'] in session['cart_item']:
@@ -83,9 +80,9 @@ def add_product_to_cart():
 			
 			session['all_total_quantity'] = all_total_quantity
 			session['all_total_price'] = all_total_price
-			
+
 			return redirect(url_for('.products'))
-		else:			
+		else:
 			return 'Error while adding item to cart'
 	except Exception as e:
 		print(e)
@@ -116,6 +113,7 @@ def empty_cart():
 	except Exception as e:
 		print(e)
 
+
 @app.route('/delete/<string:code>')
 def delete_product(code):
 	try:
@@ -143,21 +141,13 @@ def delete_product(code):
 		return redirect(url_for('.products'))
 	except Exception as e:
 		print(e)
-		
+
 
 @app.before_request
 def before_request_func():
-	session.sid = 'd5ac9317-b772-428c-b192-b61c94b02226'
+	session['username'] = 'guest'
+	session.sid = SID
 	session.modified = True
-	print(session.sid)
-
-@app.after_request
-def after_request_func(response):
-	print(session.sid)
-	session.sid = 'd5ac9317-b772-428c-b192-b61c94b02226'
-	session.modified = True
-	print(session.sid)
-	return response
 
 
 def array_merge( first_array , second_array ):
