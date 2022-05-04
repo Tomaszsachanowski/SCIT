@@ -10,6 +10,11 @@ services:
     container_name: shop-app-1
     environment: 
       TITLE_APP: VM_1
+      SID: 'd5ac9317-b772-428c-b192-b61c94b02226'
+    networks:
+        appnet:
+            ipv4_address: 172.24.2.1
+
   app_2:
     build: ./app
     links:
@@ -20,6 +25,10 @@ services:
     container_name: shop-app-2
     environment: 
       TITLE_APP: VM_2
+      SID: 'd5ac9317-b772-428c-b192-b61c94b02226'
+    networks:
+        appnet:
+            ipv4_address: 172.24.2.2
   app_3:
     build: ./app
     links:
@@ -30,7 +39,10 @@ services:
     container_name: shop-app-3
     environment: 
       TITLE_APP: VM_3
-
+      SID: 'd5ac9317-b772-428c-b192-b61c94b02226'
+    networks:
+        appnet:
+            ipv4_address: 172.24.2.3
   db:
     image: mysql:8.0.28
     ports:
@@ -40,13 +52,22 @@ services:
     volumes:
       - ./database:/docker-entrypoint-initdb.d/:ro
     container_name: mysql-8_0
-
+    networks:
+        appnet:
+            ipv4_address: 172.24.2.4
   redis:
     image: redis
     ports:
       - "6379:6379"
-    # environment:
-    #   MYSQL_ROOT_PASSWORD: root
-    # volumes:
-    #   - ./database:/docker-entrypoint-initdb.d/:ro
     container_name: redis-session
+    networks:
+        appnet:
+            ipv4_address: 172.24.2.5
+
+networks:
+    appnet:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: "172.24.2.0/16"
