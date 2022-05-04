@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Simple shoping: {{ title }}</title>
+	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div>
+		{% if 'cart_item' in session %}
+			<div id="koszyk-zakupowy">Wybrane produkty</div>		
+			<table id="tabelka">
+			<tbody>
+				<tr>
+					<th style="text-align:left;" width="30%">NAZWA</th>
+					<th style="text-align:center;" width="10%">KOD</th>
+					<th style="text-align:center;" width="10%">ILOSC</th>
+					<th style="text-align:center;" width="25%">CENA ZA SZTUKE</th>
+					<th style="text-align:center;" width="20%">CENA</th>
+					<th style="text-align:center;" width="10%">USUN</th>
+				</tr>
+				{% for key, val in session['cart_item'].items() %}
+					{% set quantity = session['cart_item'][key]['quantity'] %}
+					{% set price = session['cart_item'][key]['price'] %}
+					{% set item_price = session['cart_item'][key]['total_price'] %}					
+					<tr>
+						<td style="text-align:left;"><img src="/static/images/{{ session['cart_item'][key]['image'] }}" id="obrazek-koszykowy" />
+							{{ session['cart_item'][key]['name'] }}</td>
+						<td style="text-align:center;">{{ session['cart_item'][key]['code'] }}</td>
+						<td style="text-align:center;">{{ quantity }}</td>
+						<td  style="text-align:center;"> {{ price }}</td>
+						<td  style="text-align:center;"> {{ item_price }}</td>
+						<td style="text-align:center;">
+							<a href="{{ url_for('.delete_product', code=session['cart_item'][key]['code']) }}" class="btnRemoveAction">
+								<img src="/static/images/delete.png" alt="Remove Item" />
+							</a>
+						</td>
+					</tr>
+
+				{% endfor %}
+				<tr>
+					<td colspan="2" align="center">SUMA:</td>
+					<td align="center"><strong> {{ session['all_total_quantity'] }}</strong></td>
+					<td align="center" colspan="4"><strong> {{ session['all_total_price'] }}</strong></td>
+					<td></td>
+				</tr>
+			</tbody>
+			</table>
+			<a id="guzik-pusty" href="{{ url_for('.empty_cart') }}">Usun koszyk</a>
+
+		{% else: %}
+			<div id="koszyk-zakupowy-pusty">Brak wybranych produktow</div>
+		{% endif %}
+
+	</div>
+
+	<div >
+		<div id="lista-produktow">Lista produktów</div>
+
+		{% for product in products %}
+
+			<div id="produkty-sklepowe">
+				<form method="post" action="/add">
+					<div id="zdjecie-produktu"><img src="/static/images/{{ product.image }}"></div>
+						<div id="nazwa-produktu">{{ product.name }}</div>
+						<div id="cena-prduktu"> {{ product.price }}</div>
+							<input type="hidden" name="code" value="{{ product.code }}"/>
+							<input type="text" id="ilosc-produktu" name="quantity" value="1" size="1" />
+							<input type="submit" value="Add to Cart" id="guzik-dodaj" />
+					</form>
+			</div>
+
+		{% endfor %}
+	
+	</div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+body {
+	font-family: Arial;
+	color: #000000;
+	font-size: 0.9em;
+}
+
+#koszyk-zakupowy {
+	text-align: center;
+	clear: both;
+	margin: 50px;
+	font-size: 60px;
+}
+
+#koszyk-zakupowy-pusty {
+	text-align: center;
+	clear: both;
+	margin: 40px;
+	font-size: 50px;
+
+}
+#tabelka {
+	font-size: 25px;
+    border-spacing: 10px;
+    border-collapse: separate;
+	width: 100%;
+}
+
+#obrazek-koszykowy {
+	width: 40px;
+    height: 60px;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+#guzik-pusty {
+	background-color: #ffffff;
+	border: #ff0000 3px ridge;
+	padding: 1px 10px;
+	color: #ff0000;
+	float: right;
+	text-decoration: none;
+	border-radius: 30px;
+	font-size: 35px;
+	margin: 40px;
+}
+
+#lista-produktow {
+	margin: 40px;
+	margin-top: 80px;
+	font-size: 60px;
+	margin-top: 80px;
+}
+#produkty-sklepowe {
+	float: left;
+	background: #ffffff;
+	border: #000000 1px solid;
+	width: 380px;
+	height: 260px;
+    vertical-align: middle;
+    margin-left: 30px;
+    margin-right: 30px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#zdjecie-produktu {
+	height: 155px;
+	width: 250px;
+	background-color: #FFF;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+}
+
+#nazwa-produktu {
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 30px;
+}
+#cena-prduktu {
+	float:left;
+	font-size: 20px;
+	margin-left: 60px;
+	margin-right: 30px;
+
+}
+#guzik-dodaj {
+    padding: 10px 10px;
+    margin-right: 35px;
+    background-color: #b0b0b0;
+    border: #b0b0b0 1px solid;
+    color: #000000;
+    float: right;
+    text-decoration: none;
+    border-radius: 10px;
+    cursor: pointer;
+    vertical-align: middle;
+
+}
+#ilosc-produktu {
+	text-align: center;
+    padding: 5px 10px;
+    border-radius: 3px;
+    border: #E0E0E0 1px solid;
+}
