@@ -6,7 +6,7 @@
 </head>
 <body>
 	<div>
-		{% if 'cart_item' in session %}
+		{% if 'cart_item' in data %}
 			<div id="koszyk-zakupowy">Wybrane produkty</div>		
 			<table id="tabelka">
 			<tbody>
@@ -18,19 +18,19 @@
 					<th style="text-align:center;" width="20%">CENA</th>
 					<th style="text-align:center;" width="10%">USUN</th>
 				</tr>
-				{% for key, val in session['cart_item'].items() %}
-					{% set quantity = session['cart_item'][key]['quantity'] %}
-					{% set price = session['cart_item'][key]['price'] %}
-					{% set item_price = session['cart_item'][key]['total_price'] %}					
+				{% for key, val in data['cart_item'].items() %}
+					{% set quantity = data['cart_item'][key]['quantity'] %}
+					{% set price = data['cart_item'][key]['price'] %}
+					{% set item_price = data['cart_item'][key]['total_price'] %}					
 					<tr>
-						<td style="text-align:left;"><img src="/static/images/{{ session['cart_item'][key]['image'] }}" id="obrazek-koszykowy" />
-							{{ session['cart_item'][key]['name'] }}</td>
-						<td style="text-align:center;">{{ session['cart_item'][key]['code'] }}</td>
+						<td style="text-align:left;"><img src="/static/images/{{ data['cart_item'][key]['image'] }}" id="obrazek-koszykowy" />
+							{{ data['cart_item'][key]['name'] }}</td>
+						<td style="text-align:center;">{{ data['cart_item'][key]['code'] }}</td>
 						<td style="text-align:center;">{{ quantity }}</td>
 						<td  style="text-align:center;"> {{ price }}</td>
 						<td  style="text-align:center;"> {{ item_price }}</td>
 						<td style="text-align:center;">
-							<a href="{{ url_for('.delete_product', code=session['cart_item'][key]['code']) }}" class="btnRemoveAction">
+							<a href="{{ url_for('.delete_product', code=data['cart_item'][key]['code']) }}" class="btnRemoveAction">
 								<img src="/static/images/delete.png" alt="Remove Item" />
 							</a>
 						</td>
@@ -39,8 +39,8 @@
 				{% endfor %}
 				<tr>
 					<td colspan="2" align="center">SUMA:</td>
-					<td align="center"><strong> {{ session['all_total_quantity'] }}</strong></td>
-					<td align="center" colspan="4"><strong> {{ session['all_total_price'] }}</strong></td>
+					<td align="center"><strong> {{ data['all_total_quantity'] }}</strong></td>
+					<td align="center" colspan="4"><strong> {{ data['all_total_price'] }}</strong></td>
 					<td></td>
 				</tr>
 			</tbody>
