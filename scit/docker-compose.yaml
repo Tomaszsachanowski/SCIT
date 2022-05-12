@@ -1,27 +1,34 @@
-version: "2"
+version: "3"
+
 services:
   app_1:
-    build: ./app
-    links:
+    build:
+        context: ./app
+        dockerfile: Dockerfile_app
+    depends_on:
       - db
       - redis
-    ports:
-      - "5001:5000"
+    expose:
+      - 5000
+    # ports:
+    #   - "5001:5000"
     container_name: shop-app-1
     environment: 
       TITLE_APP: VM_1
       SID: 'd5ac9317-b772-428c-b192-b61c94b02226'
     networks:
-        appnet:
-            ipv4_address: 172.24.2.1
+      appnet:
+          ipv4_address: 172.24.2.1
 
   app_2:
-    build: ./app
-    links:
+    build:
+        context: ./app
+        dockerfile: Dockerfile_app
+    depends_on:
       - db
       - redis
-    ports:
-      - "5002:5000"
+    expose:
+      - 5000
     container_name: shop-app-2
     environment: 
       TITLE_APP: VM_2
@@ -29,13 +36,16 @@ services:
     networks:
         appnet:
             ipv4_address: 172.24.2.2
+
   app_3:
-    build: ./app
-    links:
+    build:
+        context: ./app
+        dockerfile: Dockerfile_app
+    depends_on:
       - db
       - redis
-    ports:
-      - "5003:5000"
+    expose:
+      - 5000
     container_name: shop-app-3
     environment: 
       TITLE_APP: VM_3
@@ -43,8 +53,10 @@ services:
     networks:
         appnet:
             ipv4_address: 172.24.2.3
+
   db:
     image: mysql:8.0.28
+    restart: always
     ports:
       - "30000:3306"
     environment:
@@ -55,14 +67,32 @@ services:
     networks:
         appnet:
             ipv4_address: 172.24.2.4
+
   redis:
     image: redis
+    restart: always
     ports:
       - "6379:6379"
     container_name: redis-session
     networks:
         appnet:
             ipv4_address: 172.24.2.5
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile_nginx
+    container_name: nginx
+    restart: always
+    depends_on:
+      - app_1
+      - app_2
+      - app_3
+    ports:
+      - "4000:4000"
+    networks:
+        appnet:
+            ipv4_address: 172.24.2.6
 
 networks:
     appnet:
