@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  app_1:
+  shopapp1:
     build:
         context: ./app
         dockerfile: Dockerfile_app
@@ -10,9 +10,6 @@ services:
       - redis
     expose:
       - 5000
-    # ports:
-    #   - "5001:5000"
-    container_name: shop-app-1
     environment: 
       TITLE_APP: VM_1
       SID: 'd5ac9317-b772-428c-b192-b61c94b02226'
@@ -20,7 +17,7 @@ services:
       appnet:
           ipv4_address: 172.24.2.1
 
-  app_2:
+  shopapp2:
     build:
         context: ./app
         dockerfile: Dockerfile_app
@@ -29,7 +26,6 @@ services:
       - redis
     expose:
       - 5000
-    container_name: shop-app-2
     environment: 
       TITLE_APP: VM_2
       SID: 'd5ac9317-b772-428c-b192-b61c94b02226'
@@ -37,7 +33,7 @@ services:
         appnet:
             ipv4_address: 172.24.2.2
 
-  app_3:
+  shopapp3:
     build:
         context: ./app
         dockerfile: Dockerfile_app
@@ -46,7 +42,6 @@ services:
       - redis
     expose:
       - 5000
-    container_name: shop-app-3
     environment: 
       TITLE_APP: VM_3
       SID: 'd5ac9317-b772-428c-b192-b61c94b02226'
@@ -73,7 +68,6 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    container_name: redis-session
     networks:
         appnet:
             ipv4_address: 172.24.2.5
@@ -82,12 +76,11 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile_nginx
-    container_name: nginx
     restart: always
     depends_on:
-      - app_1
-      - app_2
-      - app_3
+      - shopapp1
+      - shopapp2
+      - shopapp3
     ports:
       - "4000:4000"
     networks:
