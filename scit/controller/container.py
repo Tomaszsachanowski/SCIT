@@ -13,18 +13,23 @@ class Container:
     '''
     A class that stores information about a container.
     '''
-    def __init__(self, name, image, compose_name):
+    def __init__(self, container):
+        # Container Object
+        self.__container = container
+
         # Container Name
-        self.name = name
+        self.__name = container.name
 
         # Image Name
-        self.image = image
+        self.__image = '_'.join(container.name.split('_')[:-1])
 
         # Name in docker-compose file
-        self.compose_name = compose_name
+        self.__compose_name = container.name.split('_')[1]
 
+        container.stop()# Stop shop app container.
         # Status
         self.__status = LIVE_SPARE
+        print("Container", self.__name, self.__image,  self.__compose_name)
 
     def __str__(self):
         return "Container: {} Status: {}".format(self.name, self.__status)
@@ -38,3 +43,7 @@ class Container:
             self.__status = LIVE_SPARE
         elif self.__status == LIVE_SPARE:
             self.__status = ACTIVATE
+
+    def start(self):
+        self.__container.start()
+        self.__status = ACTIVATE
