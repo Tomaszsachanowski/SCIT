@@ -47,3 +47,7 @@ class Container:
     def start(self):
         self.__container.start()
         self.__status = ACTIVATE
+
+    def stop(self):
+        self.__container.stop()
+        self.__status = INACTIVATE

@@ -25,9 +25,12 @@ class Controller:
         self.__grace_period = []
         self.__inactivate = []
         self.__live_spare = []
-        for container in self.docker_client.containers.list(
-            filters={"name":"shopapp*"}, all=True):
-            self.__live_spare.append(Container(container=container))
+        self.__all_shpp_app = []
+        for container in self.docker_client.containers.list(filters={"name":"shopapp*"},
+                                                            all=True):
+            con = Container(container=container)
+            self.__live_spare.append(con)
+            self.__all_shpp_app.append(con)
 
         # Reference to NGINX Container
         self.__nginx = self.docker_client.containers.get("scit_nginx_1")
@@ -56,6 +59,22 @@ class Controller:
         con.start()
         self.__activate.append(con)
 
+    def stop(self):
+        '''
+        Method to stop containers and controller
+        '''
+        # STOP NGINX container
+        self.__nginx.start()
+
+        for con in self.__all_shpp_app:
+            con.stop()
+
+        # STOP MySQL and REDIS container
+        self.__redis.start()
+        self.__my_sql.start()
+
+
 if __name__=="__main__":
    a =  Controller()
    a.start()
+   a.stop()
