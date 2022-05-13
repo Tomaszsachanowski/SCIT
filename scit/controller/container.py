@@ -1,3 +1,6 @@
+import subprocess
+
+
 # Virtual machine is online and accepts/processes any incoming requests.
 ACTIVATE = 'ACTIVATE'
 # Virtual machine processes any existing requests, but does not accept any new requests.
@@ -9,6 +12,9 @@ LIVE_SPARE = 'LIVE SPARE'
 
 
 ALL_STATES = frozenset({ACTIVATE, GRACE_PERIOD, INACTIVATE, LIVE_SPARE})
+
+DOCKER_COMPSE_FILE = "../docker-compose.yaml"
+
 class Container:
     '''
     A class that stores information about a container.
@@ -32,7 +38,7 @@ class Container:
         print("Container", self.__name, self.__image,  self.__compose_name)
 
     def __str__(self):
-        return "Container: {} Status: {}".format(self.name, self.__status)
+        return "Container: {} Status: {}".format(self.__name, self.__status)
 
     def next_status(self):
         if self.__status == ACTIVATE:
@@ -48,6 +54,20 @@ class Container:
         self.__container.start()
         self.__status = ACTIVATE
 
-    def stop(self):
-        self.__container.stop()
+    def stop(self, timeout=None):
+        self.__container.stop(timeout=timeout)
+        self.__status = GRACE_PERIOD
+
+
+    def remove(self):
+        self.__container.remove(v=True)
         self.__status = INACTIVATE
+
+    def restore(self):
+        # Use docker-compose as it has defined all important data to run image
+        subprocess.run(["docker-compose",  "-f", DOCKER_COMPSE_FILE,
+                        "create", "--build", self.__compose_name])
+        self.__status = LIVE_SPARE
+
+    # def clear(self):
+    #      self.__container.exec_run('bash -c "rm -rf /*"')
