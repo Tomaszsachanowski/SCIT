@@ -10,7 +10,7 @@ Kontroler zarządza maszynami i przestrzega określonej strategii działania. Ma
 
 ## IMPLEMENTACJA
 
-Koncepcja SCIT będzie wdrożona i testowana na oprogramowaniu docker, które zapewni nam wirtualizację  i wiele kopii systemu. W architekturze SCIT centralnym komponentem jest kontroler,  który będzie napisany w języku Python. Będzie on odpowiadał za czasy rotacji i ekspozycji maszyny wirtualnej oraz zostanie uruchomiony na osobnej maszynie wewnętrznej. Z kontrolerem będziemy komunikować się za pomocą REST API. Prosta aplikacja web świadcząca usługi klientom będzie zbudowana przy użyciu biblioteki Django. Pozwoli nam to m.in. zasymulować mechanizm zachowania sesji w trakcie przełączania.
+Koncepcja SCIT będzie wdrożona i testowana na oprogramowaniu docker, które zapewni nam wirtualizację  i wiele kopii systemu. W architekturze SCIT centralnym komponentem jest kontroler,  który będzie napisany w języku Python z biblioteką docker (do zarządzania obrazami) oraz asyncio (do uruchomiania w pętli asynchroniczej kolejnych stanów maszyny). Będzie on odpowiadał za czasy rotacji i ekspozycji maszyny wirtualnej oraz zostanie uruchomiony na osobnej maszynie wewnętrznej. Prosta aplikacja web świadcząca usługi klientom będzie zbudowana przy użyciu biblioteki flask. Pozwoli nam to m.in. zasymulować mechanizm zachowania sesji w trakcie przełączania.
 
 ## METRYKI 
 
@@ -24,3 +24,32 @@ Czas ekspozycji definiujący kompromis między bezpieczeństwem a dostępności�
 3) Zbadanie czy serwery zmieniają stany przy pomocy kontrolera.
 4) Sprawdzenie zachowania metody przy większej ilości maszyn wirtualnych.
 5) Przesyłamy do serwera dużo zgłoszeń (szukamy granicy działania). Problemem będzie prawdopodobnie wysłanie większej ilości zapytań niż serwer może przetworzyć w danym kwancie.
+
+## URUCHOMIENIE
+
+```
+Sprzęt musi posiadać możliwość wirtualizacji
+docker-compose (https://docs.docker.com/compose/install/)
+python3.8+ (https://www.python.org/downloads/)
+pip3 (https://pypi.org/project/pip/)
+```
+
+### Przygotowanie
+
+```
+conda env create -f environment.yml
+```
+
+### Uruchomienie docker-compose
+```
+W osobnym terminalu, który znajduje się w lokalizacji SCIT/scit
+
+docker-compose up
+```
+
+### Uruchomienie controlera
+```
+W osobnym terminalu, który znajduje się w lokalizacji SCIT/scit/controller
+
+python main.py
+```
