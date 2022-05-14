@@ -1,12 +1,8 @@
-import time
-import asyncio
-
 from container import Container
 from logger import logging
 
 
 GRACE_PERIOD_TIME = 15
-LOOP_TIME = 30
 class Controller:
     '''
     A class that acts as a SCIT controller
@@ -125,37 +121,3 @@ class Controller:
     @property
     def logger(self):
         return logging.getLogger(__name__)
-
-
-async def controller_job(controller):
-    '''
-    Async Controller Job pushing need to change running containers 
-    and providing pass through whole running-dead-awaiting loop
-    '''
-    logging.getLogger(__name__).info("[Controller] - Started Controller Job")
-    start = time.perf_counter()
-    controller.loop()
-    stop = time.perf_counter()
-    logging.getLogger(__name__).info("[Controller] - Finished Controller Job")
-
-    logging.getLogger(__name__).info(
-        "[Controller] - Finished Controller Job in {}".format(stop -start))
-
-async def controller_loop(controller):
-    '''
-    Async Controller Loop pushing Controller Jobs 
-    '''
-    loop = asyncio.get_event_loop()
-    while True:
-        await asyncio.sleep(LOOP_TIME)
-        loop.create_task(controller_job(controller))
-
-
-if __name__=="__main__":
-    controller = Controller()
-    controller.start()
-
-    loop = asyncio.get_event_loop()
-
-    asyncio.ensure_future(controller_loop(controller))
-    loop.run_forever()
