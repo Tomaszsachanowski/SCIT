@@ -1,4 +1,7 @@
 import subprocess
+import docker
+
+from logger import logging
 
 
 # Virtual machine is online and accepts/processes any incoming requests.
@@ -19,55 +22,56 @@ class Container:
     '''
     A class that stores information about a container.
     '''
+    # Connect to docker engine
+    docker_client =  docker.from_env()
+
+
     def __init__(self, container):
-        # Container Object
-        self.__container = container
 
         # Container Name
         self.__name = container.name
 
-        # Image Name
-        self.__image = '_'.join(container.name.split('_')[:-1])
-
         # Name in docker-compose file
         self.__compose_name = container.name.split('_')[1]
 
-        container.stop()# Stop shop app container.
+        container.stop()# Stop shop app container. To be sure
+
         # Status
         self.__status = LIVE_SPARE
-        print("Container", self.__name, self.__image,  self.__compose_name)
+        self.logger.info("[CONTAINER] Init {}".format(self))
 
     def __str__(self):
         return "Container: {} Status: {}".format(self.__name, self.__status)
 
-    def next_status(self):
-        if self.__status == ACTIVATE:
-            self.__status = GRACE_PERIOD
-        elif self.__status == GRACE_PERIOD:
-            self.__status = INACTIVATE
-        elif self.__status == INACTIVATE:
-            self.__status = LIVE_SPARE
-        elif self.__status == LIVE_SPARE:
-            self.__status = ACTIVATE
+    @property
+    def container(self):
+        return Container.docker_client.containers.get(self.__name)
 
     def start(self):
-        self.__container.start()
+        self.container.start()
         self.__status = ACTIVATE
+        self.logger.info("[CONTAINER] Start {}".format(self))
+
 
     def stop(self, timeout=None):
-        self.__container.stop(timeout=timeout)
+        self.container.stop(timeout=timeout)
         self.__status = GRACE_PERIOD
+        self.logger.info("[CONTAINER] Stop {}".format(self))
 
 
     def remove(self):
-        self.__container.remove(v=True)
+        self.container.remove(v=True)
         self.__status = INACTIVATE
+        self.logger.info("[CONTAINER] Remove {}".format(self))
 
     def restore(self):
         # Use docker-compose as it has defined all important data to run image
         subprocess.run(["docker-compose",  "-f", DOCKER_COMPSE_FILE,
                         "create", "--build", self.__compose_name])
         self.__status = LIVE_SPARE
+        self.logger.info("[CONTAINER] Restore {}".format(self))
 
-    # def clear(self):
-    #      self.__container.exec_run('bash -c "rm -rf /*"')
+    @property
+    def logger(self):
+        return logging.getLogger(__name__)
+
