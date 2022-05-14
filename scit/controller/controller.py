@@ -1,12 +1,12 @@
 import time
-
+import asyncio
 
 from container import Container
 from logger import logging
 
 
-GRACE_PERIOD_TIME = 30
-
+GRACE_PERIOD_TIME = 15
+LOOP_TIME = 30
 class Controller:
     '''
     A class that acts as a SCIT controller
@@ -66,92 +66,96 @@ class Controller:
         self.__my_sql.start()
         self.logger.info("[CONTROLLER] - Stop controller".format())
 
-    def state_one(self):
+    def __activate_state(self):
         '''
         Set first live spare container into active state  
         '''
-        self.logger.info("[CONTROLLER] - State one start".format())
+        self.logger.info("[CONTROLLER] - activate state start".format())
         con = self.__live_spare.pop(0)
         con.start()
         self.__activate.append(con)
         self.logger.info(
-                "[CONTROLLER] - State one for {} completed".format(con))
+                "[CONTROLLER] - activate state for {} completed".format(con))
 
-    def state_two(self):
+    def __grace_period_state(self):
         '''
         Set previously running container into grace period state  
         '''
-        self.logger.info("[CONTROLLER] - State two start".format())
+        self.logger.info("[CONTROLLER] - grace period state start".format())
         con = self.__activate.pop(0)
         self.__grace_period.append(con)
 
         # Send stop signal to docker engine
         con.stop(timeout=GRACE_PERIOD_TIME)
         self.logger.info(
-                "[CONTROLLER] - State two for {} completed".format(con))
+                "[CONTROLLER] - grace period state for {} completed".format(con))
 
-    def state_three(self):
+    def __inactivate_state(self):
         '''
         Remove container and push reference to dead state
         '''
-        self.logger.info("[CONTROLLER] - State three start".format())
+        self.logger.info("[CONTROLLER] - inactivate state start".format())
         con = self.__grace_period.pop(0)
         con.remove()
         self.__inactivate.append(con)
         self.logger.info(
-                "[CONTROLLER] - State three for {} completed".format(con))
+                "[CONTROLLER] - inactivate state for {} completed".format(con))
 
-    def state_four(self):
+    def __restore_state(self):
         '''
         Try to start all in1activate django containers using docker-compose
         '''
-        self.logger.info("[CONTROLLER] - State four start".format())
+        self.logger.info("[CONTROLLER] - restore state start".format())
         while len(self.__inactivate) != 0:
             con = self.__inactivate.pop(0)
             con.restore()
             self.__live_spare.append(con)
             self.logger.info(
-                "[CONTROLLER] - State four for {} completed".format(con))
+                "[CONTROLLER] - restore state for {} completed".format(con))
         self.logger.info(
-            "[CONTROLLER] - State four all completed".format())
+            "[CONTROLLER] - restore state all completed")
+
+
+    def loop(self):
+        self.__activate_state()
+        self.__grace_period_state()
+        self.__inactivate_state()
+        self.__restore_state()
+
     @property
     def logger(self):
         return logging.getLogger(__name__)
 
+
+async def controller_job(controller):
+    '''
+    Async Controller Job pushing need to change running containers 
+    and providing pass through whole running-dead-awaiting loop
+    '''
+    logging.getLogger(__name__).info("[Controller] - Started Controller Job")
+    start = time.perf_counter()
+    controller.loop()
+    stop = time.perf_counter()
+    logging.getLogger(__name__).info("[Controller] - Finished Controller Job")
+
+    logging.getLogger(__name__).info(
+        "[Controller] - Finished Controller Job in {}".format(stop -start))
+
+async def controller_loop(controller):
+    '''
+    Async Controller Loop pushing Controller Jobs 
+    '''
+    loop = asyncio.get_event_loop()
+    while True:
+        await asyncio.sleep(LOOP_TIME)
+        loop.create_task(controller_job(controller))
+
+
 if __name__=="__main__":
-   a =  Controller()
-   a.start()
-   a.state_one()
-   time.sleep(2)
-   a.state_two()       
-   time.sleep(2)
-   a.state_three()
-   time.sleep(2)
-   a.state_four()
-   time.sleep(2)
-   print("Koniec 1")
-   time.sleep(30)
+    controller = Controller()
+    controller.start()
 
-   a.state_one()
-   time.sleep(2)
-   a.state_two()       
-   time.sleep(2)
-   a.state_three()
-   time.sleep(2)
-   a.state_four()
-   time.sleep(2)
+    loop = asyncio.get_event_loop()
 
-   print("Koniec 2")
-
-   time.sleep(35)
-
-   a.state_one()
-   time.sleep(2)
-   a.state_two()       
-   time.sleep(2)
-   a.state_three()
-   time.sleep(2)
-   a.state_four()
-   print("Koniec 3")
-   time.sleep(35)
-   a.stop()
+    asyncio.ensure_future(controller_loop(controller))
+    loop.run_forever()
