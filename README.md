@@ -53,3 +53,10 @@ W osobnym terminalu, który znajduje się w lokalizacji SCIT/scit/controller
 
 python main.py
 ```
+
+### Uruchomienie testów
+```
+Trzeba dodać biblioteki matplotlib i timeit.
+W osobnym terminalu, który znajduje się w lokalizacji SCIT/scit
+python tests/response.py
+```
