@@ -1,3 +1,5 @@
+from time import sleep
+ 
 from container import Container
 from logger import logging
 
@@ -114,6 +116,8 @@ class Controller:
 
     def loop(self):
         self.__activate_state()
+        sleep(3) # We have to be sure that the HTTP server has launched... :(
+        self.logger.info("[CONTROLLER] - sleep 3")
         self.__grace_period_state()
         self.__inactivate_state()
         self.__restore_state()
